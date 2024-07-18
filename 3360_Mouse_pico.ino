@@ -230,14 +230,26 @@ void update_buttons()
             buttons_latch[i] -= 1;
     }
     
-    if ((pins_state & (1 << BUTTON_DPI)) && !(buttons & (1 << BUTTON_DPI)))
+    static bool dpi_button_pressed = false;
+
+    // Detect BUTTON_DPI press and release (state change)
+    bool current_dpi_state = pins_state & (1 << BUTTON_DPI);
+    if (current_dpi_state && !dpi_button_pressed)
     {
+        // Button was just pressed
+        dpi_button_pressed = true;
+
         // Cycle through dpi values
         current_dpi_index = (current_dpi_index + 1) % 3;
         int new_dpi_value = dpi_values[current_dpi_index];
 
         // Call the configuration function with the new DPI value
         pmw3360_config(new_dpi_value);
+    }
+    else if (!current_dpi_state)
+    {
+        // Button was just released
+        dpi_button_pressed = false;
     }
     
     buttons = next_buttons;
