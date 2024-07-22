@@ -20,7 +20,6 @@ def getValues():
 
 
 def checkValues(*args):
-
     dpi1 = ent1.get()
     dpi2 = ent2.get()
     dpi3 = ent3.get()
@@ -28,8 +27,6 @@ def checkValues(*args):
     dpi5 = ent5.get()
     nDPI = numberOfDPIs.get()
     
-    print("changed")
-
     saveSettings.config(state=DISABLED)
 
     if nDPI == 5 and dpi1 != "" and dpi2 != "" and dpi3 != "" and dpi4 != "" and dpi5 != "":
