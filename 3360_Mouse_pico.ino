@@ -163,6 +163,7 @@ uint8_t buttons = 0;
 uint8_t buttons_latch_max = 8;
 uint8_t buttons_latch[5] = {0, 0, 0, 0, 0};
 
+#define NUM_DPI_VALUES 3
 int dpi_values[] = {7, 15, 23};
 int current_dpi_index = 0;
 
@@ -240,7 +241,7 @@ void update_buttons()
         dpi_button_pressed = true;
 
         // Cycle through dpi values
-        current_dpi_index = (current_dpi_index + 1) % 3;
+        current_dpi_index = (current_dpi_index + 1) % NUM_DPI_VALUES;
         int new_dpi_value = dpi_values[current_dpi_index];
 
         // Call the configuration function with the new DPI value

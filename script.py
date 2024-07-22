@@ -33,19 +33,14 @@ def checkValues(*args):
     saveSettings.config(state=DISABLED)
 
     if nDPI == 5 and dpi1 != "" and dpi2 != "" and dpi3 != "" and dpi4 != "" and dpi5 != "":
-        print("five")
         saveSettings.config(state="normal")  
     elif nDPI == 4 and dpi1 != "" and dpi2 != "" and dpi3 != "" and dpi4 != "":
-        print("vier")
         saveSettings.config(state="normal")
     elif nDPI == 3 and dpi1 != "" and dpi2 != "" and dpi3 != "":
-        print("drei")
         saveSettings.config(state="normal")
     elif nDPI == 2 and dpi1 != "" and dpi2 != "":
-        print("zwei")
         saveSettings.config(state="normal")
     elif nDPI == 1 and dpi1 != "":
-        print("eins")
         saveSettings.config(state="normal")
     else:
         saveSettings.config(state=DISABLED)  
@@ -105,7 +100,6 @@ def addDPI(*args):
         ent4.config(state="disabled", style="TCombobox")
         ent5.set("")
         ent5.config(state="disabled", style="TCombobox")
-
 
 root = Tk()
 style = ttk.Style()
@@ -258,7 +252,7 @@ n5 = IntVar()
 
 #variable for numberofdpis
 numberOfDPIs = IntVar()
-numberOfDPIs.set(0)
+numberOfDPIs.set("Bitte Auswählen")
 
 #dropdown label + menu
 dropDownLabel = Label(root, text="Wie viele DPI Einstellungen?").pack(pady=5)
@@ -308,12 +302,10 @@ n4.trace_add("write", checkValues)
 n5.trace_add("write", checkValues)
 numberOfDPIs.trace_add("write", checkValues)
 
-saveSettings = Button(root, text="Einstellungen speichern", command=getValues, state=DISABLED)
+saveSettings = ttk.Button(root, text="Einstellungen speichern", command=getValues, state=DISABLED)
 saveSettings.pack(pady=5)
-exitWindow = Button(root, text="Schließen", command=root.destroy)
+exitWindow = ttk.Button(root, text="Schließen", command=root.destroy)
 exitWindow.pack(pady=5)
 
 
 root.mainloop()
-
-
