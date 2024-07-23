@@ -18,6 +18,19 @@
 #include <SPI.h>
 #include <mbed.h>
 
+
+#include <Adafruit_NeoPixel.h>
+
+// constants won't change. They're used here to 
+// set pin numbers:
+const int ledPin = 26;     // the number of the neopixel strip
+const int numLeds = 2;
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(numLeds, ledPin, NEO_GRB + NEO_KHZ800);
+
+
+
+
 REDIRECT_STDOUT_TO(Serial);
 
 #include <PluggableUSBHID.h>
@@ -155,6 +168,8 @@ void setup()
     pmw3360_config(15);
     
     setup_buttons();
+    strip.begin();
+    strip.setBrightness(80); // 1/3 brightness
 }
 
 uint32_t pins_state = 0;
@@ -167,13 +182,18 @@ uint8_t buttons_latch[5] = {0, 0, 0, 0, 0};
 int dpi_values[] = {7, 15, 23};
 int current_dpi_index = 0;
 
+int rgb_selector = 0;
+
 volatile uint32_t * pad_control = (uint32_t *)0x4001c000;
 volatile uint32_t * gpio_oe_set = (uint32_t *)0xd0000024;
 volatile uint32_t * gpio_oe_clr = (uint32_t *)0xd0000028;
 volatile uint32_t * gpio_in = (uint32_t *)0xd0000004;
 
-void update_buttons()
-{
+void test() {
+    // Your test function implementation here
+}
+
+void update_buttons() {
     /*
     // disable pullup/pulldown
     pad_control[BUTTONS_OFF + 1] &= 0xFFFFFFF2;
@@ -223,8 +243,7 @@ void update_buttons()
     next_buttons = (next_buttons & ok_mask) | (buttons & ~ok_mask);
     
     // update latch timings
-    for (int i = 0; i < 5; i++)
-    {
+    for (int i = 0; i < 5; i++) {
         if (((next_buttons ^ buttons) >> i) & 1)
             buttons_latch[i] = buttons_latch_max;
         else if (buttons_latch[i])
@@ -232,29 +251,49 @@ void update_buttons()
     }
     
     static bool dpi_button_pressed = false;
+    static uint32_t dpi_button_press_time = 0;
+    static const uint32_t HOLD_THRESHOLD = 2000; // 2 seconds
 
     // Detect BUTTON_DPI press and release (state change)
     bool current_dpi_state = pins_state & (1 << BUTTON_DPI);
-    if (current_dpi_state && !dpi_button_pressed)
-    {
-        // Button was just pressed
-        dpi_button_pressed = true;
 
-        // Cycle through dpi values
-        current_dpi_index = (current_dpi_index + 1) % NUM_DPI_VALUES;
-        int new_dpi_value = dpi_values[current_dpi_index];
-
-        // Call the configuration function with the new DPI value
-        pmw3360_config(new_dpi_value);
-    }
-    else if (!current_dpi_state)
+    if (current_dpi_state)
     {
-        // Button was just released
-        dpi_button_pressed = false;
+        if (!dpi_button_pressed)
+        {
+            // Button was just pressed
+            dpi_button_pressed = true;
+            dpi_button_press_time = millis(); // Track time of button press
+        }
+        else
+        {
+            // Button is held down, check if we should call test()
+            if (millis() - dpi_button_press_time >= HOLD_THRESHOLD)
+            {
+                rgb_selector = (rgb_selector + 1) % 2;
+                dpi_button_press_time = millis(); // Reset the press time to avoid multiple calls
+            }
+        }
     }
-    
+    else
+    {
+        if (dpi_button_pressed)
+        {
+            // Button was just released
+            dpi_button_pressed = false;
+
+            // Cycle through dpi values
+            current_dpi_index = (current_dpi_index + 1) % NUM_DPI_VALUES;
+            int new_dpi_value = dpi_values[current_dpi_index];
+
+            // Call the configuration function with the new DPI value
+            pmw3360_config(new_dpi_value);
+        }
+    }
+
     buttons = next_buttons;
 }
+
 
 uint8_t wheel_state_a = 0;
 uint8_t wheel_state_b = 0;
@@ -286,6 +325,54 @@ void update_wheel()
     }
 }
 
+
+unsigned long previousMillis = 0; // stores the last time LEDs were updated
+const long interval = 30;         // interval at which to update LEDs (milliseconds)
+
+uint16_t j = 0;
+
+void rgb_select(int selector) {
+  if (selector == 0)
+    rainbow();
+  else
+    static_color();
+}
+
+void static_color() {
+  for (int i = 0; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, 255,0,0);
+  }
+  strip.show();
+}
+
+void rainbow() {
+  uint16_t i;
+
+  for(i = 0; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, RainbowWheel((i * 1 + j) & 255));
+  }
+  strip.show();
+
+  j++;
+  if (j >= 256) {
+    j = 0;
+  }
+}
+
+uint32_t RainbowWheel(byte WheelPos) {
+  if(WheelPos < 85) {
+    return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+  } 
+  else if(WheelPos < 170) {
+    WheelPos -= 85;
+    return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  } 
+  else {
+    WheelPos -= 170;
+    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+}
+
 int n = 0;
 int usb_hid_poll_interval = 1; 
 
@@ -305,6 +392,12 @@ MotionBurstData spi_read_motion_burst(bool do_update_wheel);
 
 void loop()
 {
+    unsigned long currentMillis = millis();
+    if (currentMillis - previousMillis >= interval) {
+      previousMillis = currentMillis;
+      rgb_select(rgb_selector);
+    }
+
     // these execute nearly instantly
     // we want to call update_wheel roughly every 250ms to avoid skipping
     update_wheel();
