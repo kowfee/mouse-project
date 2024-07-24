@@ -24,7 +24,7 @@
 // constants won't change. They're used here to 
 // set pin numbers:
 const int ledPin = 26;     // the number of the neopixel strip
-const int numLeds = 2;
+const int numLeds = 6;
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(numLeds, ledPin, NEO_GRB + NEO_KHZ800);
 
@@ -257,38 +257,30 @@ void update_buttons() {
     // Detect BUTTON_DPI press and release (state change)
     bool current_dpi_state = pins_state & (1 << BUTTON_DPI);
 
-    if (current_dpi_state)
+
+    if ((!dpi_button_pressed) && (current_dpi_state))
     {
-        if (!dpi_button_pressed)
-        {
-            // Button was just pressed
-            dpi_button_pressed = true;
-            dpi_button_press_time = millis(); // Track time of button press
-        }
-        else
-        {
-            // Button is held down, check if we should call test()
-            if (millis() - dpi_button_press_time >= HOLD_THRESHOLD)
-            {
-                rgb_selector = (rgb_selector + 1) % 2;
-                dpi_button_press_time = millis(); // Reset the press time to avoid multiple calls
-            }
-        }
+        // Button was just pressed
+        dpi_button_pressed = true;
+        dpi_button_press_time = millis(); // Track time of button press
     }
-    else
+    else if ((dpi_button_pressed) && (millis() - dpi_button_press_time >= HOLD_THRESHOLD) && (!current_dpi_state))
     {
-        if (dpi_button_pressed)
-        {
-            // Button was just released
-            dpi_button_pressed = false;
+        rgb_selector = (rgb_selector + 1) % 2;
+        dpi_button_press_time = millis(); // Reset the press time to avoid multiple calls
+        dpi_button_pressed = false;
+    }
+    else if ((dpi_button_pressed) && (!current_dpi_state))
+    {
+        // Button was just released
+        dpi_button_pressed = false;
 
-            // Cycle through dpi values
-            current_dpi_index = (current_dpi_index + 1) % NUM_DPI_VALUES;
-            int new_dpi_value = dpi_values[current_dpi_index];
+        // Cycle through dpi values
+        current_dpi_index = (current_dpi_index + 1) % NUM_DPI_VALUES;
+        int new_dpi_value = dpi_values[current_dpi_index];
 
-            // Call the configuration function with the new DPI value
-            pmw3360_config(new_dpi_value);
-        }
+        // Call the configuration function with the new DPI value
+        pmw3360_config(new_dpi_value);
     }
 
     buttons = next_buttons;
