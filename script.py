@@ -2,8 +2,10 @@ import os
 import subprocess
 from tkinter import * 
 from tkinter import ttk 
+from tkinter import colorchooser
 
 #subprocess.run(["arduino-cli"])
+
 
 def getValues():
     values = []
@@ -14,10 +16,12 @@ def getValues():
     nDPI4 = ent4.get()
     nDPI5 = ent5.get()
 
-    values.append([nDPI,nDPI1,nDPI2,nDPI3,nDPI4,nDPI5])
-    print(values)
-    return values
+    #f = open("3360_Mouse_pico.ino", "r")
 
+
+    values = [nDPI,nDPI1,nDPI2,nDPI3,nDPI4,nDPI5]
+    
+    print(values)
 
 def checkValues(*args):
     dpi1 = ent1.get()
@@ -41,7 +45,6 @@ def checkValues(*args):
         saveSettings.config(state="normal")
     else:
         saveSettings.config(state=DISABLED)  
-
 
 def addDPI(*args):
     n = numberOfDPIs.get()
@@ -97,6 +100,15 @@ def addDPI(*args):
         ent4.config(state="disabled", style="TCombobox")
         ent5.set("")
         ent5.config(state="disabled", style="TCombobox")
+
+def selectColor():
+    color=colorchooser.askcolor(title="Farbe auswählen")
+    colorHex = color[1]
+    colorRGB = color[0]
+    colorFrame.config(background=colorHex)
+    print(colorRGB)
+
+    return colorRGB
 
 root = Tk()
 style = ttk.Style()
@@ -257,39 +269,39 @@ dropDown = OptionMenu(root, numberOfDPIs, *DPIamountOptions, command=addDPI).pac
 
 #comboboxes with labels
 lab1 = Label(root, text="DPI 1:")
-lab1.pack()
+lab1.pack(pady=5)
 ent1 = ttk.Combobox(root, width=7, textvariable=n1, state=DISABLED)
 ent1["values"] = chkboxvalues
 ent1.set("")
-ent1.pack()
+ent1.pack(pady=5)
 
 lab2 = Label(root, text="DPI 2:")
-lab2.pack()
+lab2.pack(pady=5)
 ent2 = ttk.Combobox(root, width=7, textvariable=n2, state=DISABLED)
 ent2["values"] = chkboxvalues
 ent2.set("")
-ent2.pack()
+ent2.pack(pady=5)
 
 lab3 = Label(root, text="DPI 3:")
-lab3.pack()
+lab3.pack(pady=5)
 ent3 = ttk.Combobox(root, width=7, textvariable=n3, state=DISABLED)
 ent3["values"] = chkboxvalues
 ent3.set("")
-ent3.pack()
+ent3.pack(pady=5)
 
 lab4 = Label(root, text="DPI 4:")
-lab4.pack()
+lab4.pack(pady=5)
 ent4 = ttk.Combobox(root, width=7, textvariable=n4, state=DISABLED)
 ent4["values"] = chkboxvalues
 ent4.set("")
-ent4.pack()
+ent4.pack(pady=5)
 
 lab5 = Label(root, text="DPI 5:")
-lab5.pack()
+lab5.pack(pady=5)
 ent5 = ttk.Combobox(root, width=7, textvariable=n5, state=DISABLED)
 ent5["values"] = chkboxvalues
 ent5.set("")
-ent5.pack()
+ent5.pack(pady=5)
 
 #check for changed 
 n1.trace_add("write", checkValues)
@@ -299,9 +311,16 @@ n4.trace_add("write", checkValues)
 n5.trace_add("write", checkValues)
 numberOfDPIs.trace_add("write", checkValues)
 
-saveSettings = ttk.Button(root, text="Einstellungen speichern", command=getValues, state=DISABLED)
+colorLabel = Label(root, text="RGB Farbe:")
+colorLabel.pack(pady=5)
+colorFrame = Frame(root, highlightbackground="black", highlightthickness=2, width=50, height=20)
+colorFrame.pack(pady=5)
+colorwheel = Button(root, text="Farbe auswählen", command=selectColor)
+colorwheel.pack(pady=5)
+
+saveSettings = Button(root, text="Einstellungen speichern", command=getValues, state=DISABLED)
 saveSettings.pack(pady=5)
-exitWindow = ttk.Button(root, text="Schließen", command=root.destroy)
+exitWindow = Button(root, text="Schließen", command=root.destroy)
 exitWindow.pack(pady=5)
 
 
