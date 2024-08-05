@@ -15,21 +15,32 @@ def getValues():
     nDPI3 = ent3.get()
     nDPI4 = ent4.get()
     nDPI5 = ent5.get()
+    RGBmode = modeRGBbox.get()
+    RGBcolor = colorRGB
+    brightness = brightnessValue.get()
+
+    # red = RGBcolor[0]
+    # green = RGBcolor[1]
+    # blue = RGBcolor[2]
 
     #f = open("3360_Mouse_pico.ino", "r")
 
+    if RGBcolor == ():
+        print ("empty RGB")
 
-    values = [nDPI,nDPI1,nDPI2,nDPI3,nDPI4,nDPI5]
+    values = [nDPI,nDPI1,nDPI2,nDPI3,nDPI4,nDPI5,RGBmode,RGBcolor,brightness]
     
     print(values)
 
-def checkValues(*args):
+def checkDPIvalues(*args):
     dpi1 = ent1.get()
     dpi2 = ent2.get()
     dpi3 = ent3.get()
     dpi4 = ent4.get()
     dpi5 = ent5.get()
     nDPI = numberOfDPIs.get()
+    color = colorRGB
+    
     
     saveSettings.config(state=DISABLED)
 
@@ -102,23 +113,39 @@ def addDPI(*args):
         ent5.config(state="disabled", style="TCombobox")
 
 def selectColor():
+    global colorRGB 
     color=colorchooser.askcolor(title="Farbe auswählen")
     colorHex = color[1]
     colorRGB = color[0]
     colorFrame.config(background=colorHex)
-    print(colorRGB)
 
-    return colorRGB
+def checkModeRGB(*args):
+    mode = modeRGBbox.get()
+    
+
+    #TODO: speichern soll aus bleiben wenn keine farbe ausgewählt ist = colorRGB == None, am besten wahrscheinlich bei checkDPIvalues mitimplementieren. 
+    # ebenfalls soll coloRGB () sein wenn man was anderes als Static auswählt
+    if mode != "Static":
+        colorwheel.config(state=DISABLED)
+    elif mode == "Static":
+        colorwheel.config(state="normal")
+        saveSettings.config(state=DISABLED)
+        if colorRGB != None:
+            saveSettings.config(state="normal")
 
 root = Tk()
 style = ttk.Style()
+
+
+
+colorRGB = ()
 
 style.map("whiteBG.TCombobox", fieldbackground=[("readonly", "white")])
 
 root.title("Settings")
 root.minsize(500, 600)
 #root.maxsize(500, 400)
-root.geometry("500x600+700+200")
+root.geometry("500x800+700+100")
 
 #dropdown menu option
 DPIamountOptions = [
@@ -252,6 +279,15 @@ chkboxvalues = [
     11900,
     12000]
 
+#RGB mode menu options
+modeRGB = [
+    "Off",
+    "Static",
+    "Rainbow",
+    "Police",
+    "Breathing"
+]
+
 #variables for comboboxes
 n1 = IntVar()
 n2 = IntVar()
@@ -261,7 +297,8 @@ n5 = IntVar()
 
 #variable for numberofdpis
 numberOfDPIs = IntVar()
-numberOfDPIs.set("Bitte Auswählen")
+numberOfDPIs.set(1)
+
 
 #dropdown label + menu
 dropDownLabel = Label(root, text="Wie viele DPI Einstellungen?").pack(pady=5)
@@ -270,7 +307,7 @@ dropDown = OptionMenu(root, numberOfDPIs, *DPIamountOptions, command=addDPI).pac
 #comboboxes with labels
 lab1 = Label(root, text="DPI 1:")
 lab1.pack(pady=5)
-ent1 = ttk.Combobox(root, width=7, textvariable=n1, state=DISABLED)
+ent1 = ttk.Combobox(root, width=7, textvariable=n1, state="readonly", style="whiteBG.TCombobox")
 ent1["values"] = chkboxvalues
 ent1.set("")
 ent1.pack(pady=5)
@@ -303,14 +340,27 @@ ent5["values"] = chkboxvalues
 ent5.set("")
 ent5.pack(pady=5)
 
-#check for changed 
-n1.trace_add("write", checkValues)
-n2.trace_add("write", checkValues)
-n3.trace_add("write", checkValues)
-n4.trace_add("write", checkValues)
-n5.trace_add("write", checkValues)
-numberOfDPIs.trace_add("write", checkValues)
+#check for changed DPI
+n1.trace_add("write", checkDPIvalues)
+n2.trace_add("write", checkDPIvalues)
+n3.trace_add("write", checkDPIvalues)
+n4.trace_add("write", checkDPIvalues)
+n5.trace_add("write", checkDPIvalues)
+numberOfDPIs.trace_add("write", checkDPIvalues)
 
+#choose RGB mode
+mode = StringVar()
+modeRGBlabel = Label(root, text="RBG:")
+modeRGBlabel.pack(pady=5)
+modeRGBbox = ttk.Combobox(root, width=9, textvariable=mode, state="readonly", style="whiteBG.TCombobox")
+modeRGBbox["values"] = modeRGB
+modeRGBbox.set("Static")
+modeRGBbox.pack(pady=5)
+
+#check for changed RGB mode
+mode.trace_add("write", checkModeRGB)
+
+#RGB colorwheel
 colorLabel = Label(root, text="RGB Farbe:")
 colorLabel.pack(pady=5)
 colorFrame = Frame(root, highlightbackground="black", highlightthickness=2, width=50, height=20)
@@ -318,10 +368,20 @@ colorFrame.pack(pady=5)
 colorwheel = Button(root, text="Farbe auswählen", command=selectColor)
 colorwheel.pack(pady=5)
 
+#brightness
+brightnessLabel = Label(root, text="Helligkeit:")
+brightnessLabel.pack(pady=5)
+brightnessValue = Scale(root, from_=10, to=255, length=245, orient=HORIZONTAL)
+brightnessValue.set(130)
+brightnessValue.pack()
+
+#save etc
 saveSettings = Button(root, text="Einstellungen speichern", command=getValues, state=DISABLED)
 saveSettings.pack(pady=5)
 exitWindow = Button(root, text="Schließen", command=root.destroy)
 exitWindow.pack(pady=5)
+
+
 
 
 root.mainloop()
