@@ -19,20 +19,20 @@ def getValues():
     RGBcolor = colorRGB
     brightness = brightnessValue.get()
 
-    # red = RGBcolor[0]
-    # green = RGBcolor[1]
-    # blue = RGBcolor[2]
+    red = RGBcolor[0]
+    green = RGBcolor[1]
+    blue = RGBcolor[2]
 
     #f = open("3360_Mouse_pico.ino", "r")
 
     if RGBcolor == ():
         print ("empty RGB")
 
-    values = [nDPI,nDPI1,nDPI2,nDPI3,nDPI4,nDPI5,RGBmode,RGBcolor,brightness]
+    values = [nDPI,nDPI1,nDPI2,nDPI3,nDPI4,nDPI5,RGBmode,red,green,blue,brightness]
     
     print(values)
 
-def checkDPIvalues(*args):
+def checkValues(*args):
     dpi1 = ent1.get()
     dpi2 = ent2.get()
     dpi3 = ent3.get()
@@ -40,22 +40,48 @@ def checkDPIvalues(*args):
     dpi5 = ent5.get()
     nDPI = numberOfDPIs.get()
     color = colorRGB
-    
+    mode = modeRGBbox.get()
     
     saveSettings.config(state=DISABLED)
 
-    if nDPI == 5 and dpi1 != "" and dpi2 != "" and dpi3 != "" and dpi4 != "" and dpi5 != "":
-        saveSettings.config(state="normal")  
-    elif nDPI == 4 and dpi1 != "" and dpi2 != "" and dpi3 != "" and dpi4 != "":
+
+#TODO: farbe auswählen button soll an bleiben nachdem man mode == Static und color != ()
+    rgbValidation = (mode != "Static" and color == ()) or (mode == "Static" and color != ()) or (mode != "Static" and color != ())
+    dpiValidation = ((nDPI == 5 and dpi1 != "" and dpi2 != "" and dpi3 != "" and dpi4 != "" and dpi5 != "") 
+                        or (nDPI == 4 and dpi1 != "" and dpi2 != "" and dpi3 != "" and dpi4 != "") 
+                            or (nDPI == 3 and dpi1 != "" and dpi2 != "" and dpi3 != "")
+                                or (nDPI == 2 and dpi1 != "" and dpi2 != "") 
+                                    or (nDPI == 1 and dpi1 != "") )
+
+
+    #TODO: speichern soll aus bleiben wenn keine farbe ausgewählt ist = colorRGB == None, am besten wahrscheinlich bei checkValues mitimplementieren. 
+    # ebenfalls soll coloRGB () sein wenn man was anderes als Static auswählt
+
+    if dpiValidation and rgbValidation:
         saveSettings.config(state="normal")
-    elif nDPI == 3 and dpi1 != "" and dpi2 != "" and dpi3 != "":
-        saveSettings.config(state="normal")
-    elif nDPI == 2 and dpi1 != "" and dpi2 != "":
-        saveSettings.config(state="normal")
-    elif nDPI == 1 and dpi1 != "":
-        saveSettings.config(state="normal")
-    else:
-        saveSettings.config(state=DISABLED)  
+        colorwheel.config(state=DISABLED)
+    else: 
+        saveSettings.config(state=DISABLED)
+        colorwheel.config(state="normal")   
+
+    # if (nDPI == 5 and dpi1 != "" and dpi2 != "" and dpi3 != "" and dpi4 != "" and dpi5 != "") and (mode != "Static" and color == ()):
+    #     saveSettings.config(state="normal")
+    #     colorwheel.config(state=DISABLED)  
+    # elif (nDPI == 4 and dpi1 != "" and dpi2 != "" and dpi3 != "" and dpi4 != "") and (mode != "Static" and color == ()):
+    #     saveSettings.config(state="normal")
+    #     colorwheel.config(state=DISABLED)
+    # elif (nDPI == 3 and dpi1 != "" and dpi2 != "" and dpi3 != "") and (mode != "Static" and color == ()):
+    #     saveSettings.config(state="normal")
+    #     colorwheel.config(state=DISABLED)
+    # elif (nDPI == 2 and dpi1 != "" and dpi2 != "") and (mode != "Static" and color == ()):
+    #     saveSettings.config(state="normal")
+    #     colorwheel.config(state=DISABLED)
+    # elif (nDPI == 1 and dpi1 != "") and (mode != "Static" and color == ()) or (mode == "Static" and color != ()) or (mode != "Static" and color != ()) :
+    #     saveSettings.config(state="normal")
+    #     colorwheel.config(state=DISABLED)
+    # else:
+    #     saveSettings.config(state=DISABLED)
+    #     colorwheel.config(state="normal") 
 
 def addDPI(*args):
     n = numberOfDPIs.get()
@@ -118,25 +144,20 @@ def selectColor():
     colorHex = color[1]
     colorRGB = color[0]
     colorFrame.config(background=colorHex)
+    checkValues()
 
-def checkModeRGB(*args):
-    mode = modeRGBbox.get()
-    
-
-    #TODO: speichern soll aus bleiben wenn keine farbe ausgewählt ist = colorRGB == None, am besten wahrscheinlich bei checkDPIvalues mitimplementieren. 
-    # ebenfalls soll coloRGB () sein wenn man was anderes als Static auswählt
-    if mode != "Static":
-        colorwheel.config(state=DISABLED)
-    elif mode == "Static":
-        colorwheel.config(state="normal")
-        saveSettings.config(state=DISABLED)
-        if colorRGB != None:
-            saveSettings.config(state="normal")
+# def checkModeRGB(*args):
+#     mode = modeRGBbox.get()
+#     if mode != "Static":
+#         colorwheel.config(state=DISABLED)
+#     elif mode == "Static":
+#         colorwheel.config(state="normal")
+#         saveSettings.config(state=DISABLED)
+#         if colorRGB != None:
+#             saveSettings.config(state="normal")
 
 root = Tk()
 style = ttk.Style()
-
-
 
 colorRGB = ()
 
@@ -341,12 +362,12 @@ ent5.set("")
 ent5.pack(pady=5)
 
 #check for changed DPI
-n1.trace_add("write", checkDPIvalues)
-n2.trace_add("write", checkDPIvalues)
-n3.trace_add("write", checkDPIvalues)
-n4.trace_add("write", checkDPIvalues)
-n5.trace_add("write", checkDPIvalues)
-numberOfDPIs.trace_add("write", checkDPIvalues)
+n1.trace_add("write", checkValues)
+n2.trace_add("write", checkValues)
+n3.trace_add("write", checkValues)
+n4.trace_add("write", checkValues)
+n5.trace_add("write", checkValues)
+numberOfDPIs.trace_add("write", checkValues)
 
 #choose RGB mode
 mode = StringVar()
@@ -358,7 +379,7 @@ modeRGBbox.set("Static")
 modeRGBbox.pack(pady=5)
 
 #check for changed RGB mode
-mode.trace_add("write", checkModeRGB)
+mode.trace_add("write", checkValues)
 
 #RGB colorwheel
 colorLabel = Label(root, text="RGB Farbe:")
@@ -372,7 +393,7 @@ colorwheel.pack(pady=5)
 brightnessLabel = Label(root, text="Helligkeit:")
 brightnessLabel.pack(pady=5)
 brightnessValue = Scale(root, from_=10, to=255, length=245, orient=HORIZONTAL)
-brightnessValue.set(130)
+brightnessValue.set(200)
 brightnessValue.pack()
 
 #save etc
