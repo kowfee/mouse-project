@@ -8,6 +8,12 @@ from tkinter import colorchooser
 
 def getValues():
     values = []
+    fr = open("3360_Mouse_pico.ino", "r")
+    inoLines= fr.readlines()
+    fr.close
+    fw = open("3360_Mouse_pico.ino", "w")
+    
+
     nDPI = numberOfDPIs.get()
     nDPI1 = ent1.get()
     nDPI2 = ent2.get()
@@ -24,9 +30,6 @@ def getValues():
 
     values = [nDPI,nDPI1,nDPI2,nDPI3,nDPI4,nDPI5,rgb_mode,red,green,blue,brightness]
 
-
-    #f = open("3360_Mouse_pico.ino", "r")
-
     if values[6] == 'Off':
         values[7] = 0
         values[8] = 0
@@ -36,6 +39,23 @@ def getValues():
         values[8] = rgb_color[1]
         values[9] = rgb_color[2]
     
+  
+    inoLines[165] = f"#define NUM_DPI_VALUES {nDPI}"
+    
+    if nDPI == 1:
+        inoLines[166] = f"int dpi_values[] = {{ {nDPI1} }};"
+    elif nDPI == 2:
+        inoLines[166] = f"int dpi_values[] = {{ {nDPI1},{nDPI2} }};"
+    elif nDPI == 3:
+        inoLines[166] = f"int dpi_values[] = {{ {nDPI1},{nDPI2},{nDPI3} }};"
+    elif nDPI == 4:
+        inoLines[166] = f"int dpi_values[] = {{ {nDPI1},{nDPI2},{nDPI3},{nDPI4} }};"
+    elif nDPI == 5:
+        inoLines[166] = f"int dpi_values[] = {{ {nDPI1},{nDPI2},{nDPI3},{nDPI4},{nDPI5} }};"
+
+    fw.writelines(inoLines)
+
+    print(inoLines[165])
     print(values)
 
 def checkValues(*args):
@@ -63,20 +83,24 @@ def checkValues(*args):
     else: 
         saveSettings.config(state=DISABLED)
 
-
     if mode == 'Off':
-        dummyBG = lab1
-        colorFrame.config(bg=dummyBG['bg'])
         brightnessValue.config(from_=0)
         brightnessValue.set(0)
         brightnessValue.config(state=DISABLED)
     else: 
         brightnessValue.config(state="normal", from_=30)
-        colorFrame.config(bg=('#%02x%02x%02x' % colorRGB))
         if scale != 0:
             brightnessValue.set(scale)
         else:
             brightnessValue.set(200)
+
+    if mode != "Static":
+        colorFrame.config(bg=lab1['bg'])
+    else: 
+        colorFrame.config(bg=('#%02x%02x%02x' % colorRGB))
+
+    #TODO: add values for the different modes (rainbow, police, breathing)
+
 
 def addDPI(*args):
     n = numberOfDPIs.get()
@@ -142,7 +166,6 @@ def selectColor():
     checkValues()
 
 def checkModeRGB(*args):
-
     mode = modeRGBbox.get()
 
     if mode != "Static":
