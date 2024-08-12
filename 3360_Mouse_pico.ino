@@ -163,8 +163,8 @@ uint8_t buttons = 0;
 uint8_t buttons_latch_max = 8;
 uint8_t buttons_latch[5] = {0, 0, 0, 0, 0};
 
-#define NUM_DPI_VALUES 3
-int dpi_values[] = {7, 15, 23};
+#define NUM_DPI_VALUES 5
+int dpi_values[] = {500, 7000, 5600, 200, 1200};
 int current_dpi_index = 0;
 
 volatile uint32_t * pad_control = (uint32_t *)0x4001c000;

@@ -40,22 +40,22 @@ def getValues():
         values[9] = rgb_color[2]
     
   
-    inoLines[165] = f"#define NUM_DPI_VALUES {nDPI}"
+    inoLines[165] = f"#define NUM_DPI_VALUES {nDPI}\n"
     
     if nDPI == 1:
-        inoLines[166] = f"int dpi_values[] = {{ {nDPI1} }};"
+        inoLines[166] = f"int dpi_values[] = {{{nDPI1}}};\n"
     elif nDPI == 2:
-        inoLines[166] = f"int dpi_values[] = {{ {nDPI1},{nDPI2} }};"
+        inoLines[166] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}}};\n"
     elif nDPI == 3:
-        inoLines[166] = f"int dpi_values[] = {{ {nDPI1},{nDPI2},{nDPI3} }};"
+        inoLines[166] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}}};\n"
     elif nDPI == 4:
-        inoLines[166] = f"int dpi_values[] = {{ {nDPI1},{nDPI2},{nDPI3},{nDPI4} }};"
+        inoLines[166] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}, {nDPI4}}};\n"
     elif nDPI == 5:
-        inoLines[166] = f"int dpi_values[] = {{ {nDPI1},{nDPI2},{nDPI3},{nDPI4},{nDPI5} }};"
+        inoLines[166] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}, {nDPI4}, {nDPI5}}};\n"
 
     fw.writelines(inoLines)
+    fw.close()
 
-    print(inoLines[165])
     print(values)
 
 def checkValues(*args):
