@@ -39,19 +39,21 @@ def getValues():
         values[8] = rgb_color[1]
         values[9] = rgb_color[2]
     
-  
-    inoLines[165] = f"#define NUM_DPI_VALUES {nDPI}\n"
+
+    inoLines[180] = f"#define NUM_DPI_VALUES {nDPI}\n"
     
     if nDPI == 1:
-        inoLines[166] = f"int dpi_values[] = {{{nDPI1}}};\n"
+        inoLines[181] = f"int dpi_values[] = {{{nDPI1}}};\n"
     elif nDPI == 2:
-        inoLines[166] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}}};\n"
+        inoLines[181] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}}};\n"
     elif nDPI == 3:
-        inoLines[166] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}}};\n"
+        inoLines[181] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}}};\n"
     elif nDPI == 4:
-        inoLines[166] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}, {nDPI4}}};\n"
+        inoLines[181] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}, {nDPI4}}};\n"
     elif nDPI == 5:
-        inoLines[166] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}, {nDPI4}, {nDPI5}}};\n"
+        inoLines[181] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}, {nDPI4}, {nDPI5}}};\n"
+
+    inoLines[334] = f"\tstrip.setPixelColor(i, {values[7]}, {values[8]}, {values[9]});\n"
 
     fw.writelines(inoLines)
     fw.close()
