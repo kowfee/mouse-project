@@ -178,8 +178,8 @@ uint8_t buttons = 0;
 uint8_t buttons_latch_max = 8;
 uint8_t buttons_latch[5] = {0, 0, 0, 0, 0};
 
-#define NUM_DPI_VALUES 3
-int dpi_values[] = {600, 7000, 8600};
+#define NUM_DPI_VALUES 4
+int dpi_values[] = {500, 4600, 400, 4900};
 int current_dpi_index = 0;
 
 int rgb_selector = 0;
@@ -324,15 +324,39 @@ const long interval = 30;         // interval at which to update LEDs (milliseco
 uint16_t j = 0;
 
 void rgb_select(int selector) {
-  if (selector == 0)
-    rainbow();
-  else
-    static_color();
+    // TODO: write functions for rbg_off(), police() and breathing()
+    // switch (selector)
+    // {
+    // case 0:
+    //     rgb_off();
+    //     break;        
+    // case 1:
+    //     static_color();
+    //     break;
+    // case 2:
+    //     rainbow();
+    //     break;
+    // case 3:
+    //     police();
+    //     break;
+    // case 0:
+    //     breathing();
+    //     break;
+    // }
+
+    if (selector == 0)
+        rainbow();
+    else
+        static_color();
+}
+
+void rgb_off() {
+    // TODO
 }
 
 void static_color() {
   for (int i = 0; i < strip.numPixels(); i++) {
-	strip.setPixelColor(i, 180, 249, 35);
+	strip.setPixelColor(i, 81, 49, 105);
   }
   strip.show();
 }
@@ -349,6 +373,14 @@ void rainbow() {
   if (j >= 256) {
     j = 0;
   }
+}
+
+void police() {
+    // TODO: colors that swap between red and blue
+}
+
+void breathing() {
+    // TODO 
 }
 
 uint32_t RainbowWheel(byte WheelPos) {

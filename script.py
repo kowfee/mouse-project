@@ -5,6 +5,7 @@ from tkinter import ttk
 from tkinter import colorchooser
 
 #subprocess.run(["arduino-cli"])
+#export PATH="$PATH:/home/ali/repos/mouse-project/bin"
 
 def getValues():
     values = []
@@ -24,20 +25,18 @@ def getValues():
     rgb_color = colorRGB
     brightness = brightnessValue.get()
     
-    red = 1
-    green = 1
-    blue = 1
+    red: int
+    green: int
+    blue: int
 
-    values = [nDPI,nDPI1,nDPI2,nDPI3,nDPI4,nDPI5,rgb_mode,red,green,blue,brightness]
-
-    if values[6] == 'Off':
-        values[7] = 0
-        values[8] = 0
-        values[9] = 0
+    if rgb_mode == 'Off':
+        red = 0
+        green = 0
+        blue = 0
     else:
-        values[7] = rgb_color[0]
-        values[8] = rgb_color[1]
-        values[9] = rgb_color[2]
+        red = rgb_color[0]
+        green = rgb_color[1]
+        blue = rgb_color[2]
     
 
     inoLines[180] = f"#define NUM_DPI_VALUES {nDPI}\n"
@@ -53,12 +52,22 @@ def getValues():
     elif nDPI == 5:
         inoLines[181] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}, {nDPI4}, {nDPI5}}};\n"
 
-    inoLines[334] = f"\tstrip.setPixelColor(i, {values[7]}, {values[8]}, {values[9]});\n"
+
+    if rgb_mode == "Off":
+        inoLines[184] = f"int rgb_selector = 0;\n"
+    elif rgb_mode == "Static":
+        inoLines[184] = f"int rgb_selector = 1;\n"
+        inoLines[358] = f"\tstrip.setPixelColor(i, {red}, {green}, {blue});\n"
+    elif rgb_mode == "Rainbow":
+        inoLines[184] = f"int rgb_selector = 2;\n"
+    elif rgb_mode == "Police":
+        inoLines[184] = f"int rgb_selector = 3;\n"
+    elif rgb_mode == "Breathing":
+        inoLines[184] = f"int rgb_selector = 4;\n"
 
     fw.writelines(inoLines)
     fw.close()
 
-    print(values)
 
 def checkValues(*args):
     dpi1 = ent1.get()
