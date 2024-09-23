@@ -178,11 +178,16 @@ uint8_t buttons = 0;
 uint8_t buttons_latch_max = 8;
 uint8_t buttons_latch[5] = {0, 0, 0, 0, 0};
 
-#define NUM_DPI_VALUES 4
-int dpi_values[] = {500, 4600, 400, 4900};
+int dpi_values[] = {10, 7, 15};
+int NUM_DPI_VALUES = sizeof(dpi_values) / sizeof(dpi_values[0]);
 int current_dpi_index = 0;
 
+#define GLOBAL_BRIGHTNESS 255
+int rgb_modes[] = {0, 1, 2, 3, 4};
+// 0 - off; 1 - static color; 2 - rainbow; 3 - police; 4 - breathing
+int NUM_RGB_MODES = sizeof(rgb_modes) / sizeof(rgb_modes[0]);
 int rgb_selector = 0;
+
 
 volatile uint32_t * pad_control = (uint32_t *)0x4001c000;
 volatile uint32_t * gpio_oe_set = (uint32_t *)0xd0000024;
@@ -266,7 +271,7 @@ void update_buttons() {
     }
     else if ((dpi_button_pressed) && (millis() - dpi_button_press_time >= HOLD_THRESHOLD) && (!current_dpi_state))
     {
-        rgb_selector = (rgb_selector + 1) % 2;
+        rgb_selector = (rgb_selector + 1) % NUM_RGB_MODES;
         dpi_button_press_time = millis(); // Reset the press time to avoid multiple calls
         dpi_button_pressed = false;
     }
@@ -323,35 +328,36 @@ const long interval = 30;         // interval at which to update LEDs (milliseco
 
 uint16_t j = 0;
 
-void rgb_select(int selector) {
-    // TODO: write functions for rbg_off(), police() and breathing()
-    // switch (selector)
-    // {
-    // case 0:
-    //     rgb_off();
-    //     break;        
-    // case 1:
-    //     static_color();
-    //     break;
-    // case 2:
-    //     rainbow();
-    //     break;
-    // case 3:
-    //     police();
-    //     break;
-    // case 0:
-    //     breathing();
-    //     break;
-    // }
 
-    if (selector == 0)
-        rainbow();
-    else
-        static_color();
+void rgb_select(int rgb_selector) {
+  switch (rgb_modes[rgb_selector])
+  {
+  case 0:
+    rgb_off();
+    break;        
+  case 1:
+    strip.setBrightness(GLOBAL_BRIGHTNESS);
+    static_color();
+    break;
+  case 2:
+    strip.setBrightness(GLOBAL_BRIGHTNESS);
+    rainbow();
+    break;
+  case 3:
+    strip.setBrightness(GLOBAL_BRIGHTNESS);
+    police();
+    break;
+  case 4:
+    breathing();
+    break;
+  }
 }
 
 void rgb_off() {
-    // TODO
+  for (int i = 0; i < strip.numPixels(); i++) {
+	  strip.setPixelColor(i, 0, 0, 0);
+  }
+  strip.show();
 }
 
 void static_color() {
@@ -375,14 +381,6 @@ void rainbow() {
   }
 }
 
-void police() {
-    // TODO: colors that swap between red and blue
-}
-
-void breathing() {
-    // TODO 
-}
-
 uint32_t RainbowWheel(byte WheelPos) {
   if(WheelPos < 85) {
     return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
@@ -394,6 +392,54 @@ uint32_t RainbowWheel(byte WheelPos) {
   else {
     WheelPos -= 170;
     return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+}
+
+uint16_t police_flag = 0;
+static uint32_t blink_time = 0;
+static const uint32_t BLINK_THRESHOLD = 500;
+
+void police() {
+  if((millis() - blink_time >= BLINK_THRESHOLD) && (police_flag == 0)) {
+    blink_time = millis();
+    strip.setPixelColor(0, 255, 0, 0);
+    strip.setPixelColor(1, 0, 0, 255);
+    police_flag=(police_flag + 1) % 2;
+  }
+  else if((millis() - blink_time >= BLINK_THRESHOLD) && (police_flag == 1)) {
+    blink_time = millis();
+    strip.setPixelColor(0, 0, 0, 255);
+    strip.setPixelColor(1, 255, 0, 0);
+    police_flag= (police_flag + 1) % 2;
+  }
+  strip.show();
+}
+
+uint32_t colors[] = {
+  strip.Color(255, 0, 0),
+  strip.Color(0, 255, 0),
+  strip.Color(0, 0, 255),
+  strip.Color(255, 255, 0),
+  strip.Color(0, 255, 255),
+  strip.Color(255, 0, 255)
+};
+
+int num_colors = sizeof(colors) / sizeof(colors[0]);
+int currentColorIndex = 0;
+int fade_brightness = 0;
+int fadeAmount = 5;
+
+void breathing() {
+  strip.setPixelColor(0, colors[currentColorIndex]);
+  strip.setPixelColor(1, colors[currentColorIndex]);
+  strip.setBrightness(fade_brightness);
+  strip.show();
+  fade_brightness += fadeAmount;
+  if (fade_brightness <= 0 || fade_brightness >= 255) {
+    fadeAmount = -fadeAmount;
+    if (fade_brightness <= 0) {
+      currentColorIndex = (currentColorIndex + 1) % num_colors;
+    }
   }
 }
 
@@ -419,7 +465,7 @@ void loop()
     unsigned long currentMillis = millis();
     if (currentMillis - previousMillis >= interval) {
       previousMillis = currentMillis;
-      rgb_select(rgb_selector);
+      rgb_select(rgb_modes[rgb_selector]);
     }
 
     // these execute nearly instantly
