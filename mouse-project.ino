@@ -35,8 +35,8 @@ REDIRECT_STDOUT_TO(Serial);
 
 #include <PluggableUSBHID.h>
 
-#include "srom_3360_0x04.h"
-#include "relmouse_16.h"
+#include "src/srom_3360_0x04.h"
+#include "src/relmouse_16.h"
 USBMouse16 mouse(false);
 
 #define REG_PRODUCT_ID (0x00)
@@ -178,7 +178,7 @@ uint8_t buttons = 0;
 uint8_t buttons_latch_max = 8;
 uint8_t buttons_latch[5] = {0, 0, 0, 0, 0};
 
-int dpi_values[] = {4};
+int dpi_values[] = {23};
 int NUM_DPI_VALUES = sizeof(dpi_values) / sizeof(dpi_values[0]);
 int current_dpi_index = 0;
 
@@ -362,7 +362,7 @@ void rgb_off() {
 
 void static_color() {
   for (int i = 0; i < strip.numPixels(); i++) {
-	strip.setPixelColor(i, 217, 0, 217);
+	strip.setPixelColor(i, 0, 0, 217);
   }
   strip.show();
 }
