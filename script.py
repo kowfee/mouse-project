@@ -12,7 +12,7 @@ from tkinter import colorchooser
 
 def getValues():
     values = []
-    fr = open("mouse-project.ino", "r")
+    fr = open("./mouse-project.ino", "r")
     inoLines= fr.readlines()
     fr.close
 
@@ -39,7 +39,7 @@ def getValues():
         i5 = int(s5)
         nDPI5 = int((i5/100)-1)
 
-    fw = open("mouse-project.ino", "w")
+    fw = open("./mouse-project.ino", "w")
 
     rgb_mode = modeRGBbox.get()
     rgb_color = colorRGB
