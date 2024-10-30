@@ -222,9 +222,9 @@ colorRGB = ()
 style.map("whiteBG.TCombobox", fieldbackground=[("readonly", "white")])
 
 root.title("Settings")
-root.minsize(550, 300)
-root.maxsize(550, 300)
-root.geometry("550x300+700+100")
+root.minsize(500, 300)
+root.maxsize(500, 300)
+root.geometry("50x300+700+100")
 
 #dropdown menu option
 DPIamountOptions = [
@@ -379,7 +379,7 @@ numberOfDPIs = IntVar()
 numberOfDPIs.set(1)
 
 #dropdown label + menu
-dropDownLabel = Label(root, text="Anzahl DPI:").grid(row = 0, column = 0, pady=5, padx=5 )
+dropDownLabel = Label(root, text="Amount DPI:").grid(row = 0, column = 0, pady=5, padx=5 )
 dropDown = OptionMenu(root, numberOfDPIs, *DPIamountOptions, command=addDPI).grid(row = 0, column = 1, pady=5, padx=5 )
 
 #comboboxes with labels
@@ -427,7 +427,7 @@ n5.trace_add("write", checkValues)
 numberOfDPIs.trace_add("write", checkValues)
 
 #empty space
-frame = ttk.Frame(root, width=80, height=300).grid(row = 0, rowspan = 6, column = 2)
+frame = ttk.Frame(root, width=50, height=300).grid(row = 0, rowspan = 6, column = 2)
 
 #choose RGB mode
 mode = StringVar()
@@ -442,24 +442,24 @@ modeRGBbox.grid(row = 0, column = 4, pady=5, padx=5 )
 mode.trace_add("write", checkModeRGB)
 
 #RGB colorwheel
-colorLabel = Label(root, text="RGB Farbe:")
+colorLabel = Label(root, text="RGB Color:")
 colorLabel.grid(row = 1, column = 3, pady=5, padx=5 )
 colorFrame = Frame(root, highlightbackground="black", highlightthickness=2, width=80, height=20)
 colorFrame.grid(row = 1, column = 4, pady=5, padx=5 )
-colorwheel = Button(root, text="Farbe", command=selectColor)
+colorwheel = Button(root, text="Select", command=selectColor)
 colorwheel.grid(row = 1, column = 5, pady=5, padx=5 )
 
 #brightness
-brightnessLabel = Label(root, text="Helligkeit:")
+brightnessLabel = Label(root, text="Brightness:")
 brightnessLabel.grid(row = 2, column = 3, pady=5, padx=5 )
 brightnessValue = Scale(root, from_=10, to=255, length=80, showvalue=0, orient=HORIZONTAL)
 brightnessValue.set(100)
 brightnessValue.grid(row = 2, column = 4, pady=5, padx=5 )
 
 #save etc
-saveSettings = Button(root, text="Speichern", command=getValues, state=DISABLED)
+saveSettings = Button(root, text="Upload", command=getValues, state=DISABLED)
 saveSettings.grid(row = 5, column = 4, pady=5, padx=5 )
-exitWindow = Button(root, text="Schließen", command=root.destroy)
+exitWindow = Button(root, text="Close", command=root.destroy)
 exitWindow.grid(row = 5, column = 5, pady=5, padx=5 )
 
 root.mainloop()
