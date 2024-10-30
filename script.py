@@ -1,17 +1,13 @@
-import os 
 import subprocess
 import threading
 from tkinter import * 
 from tkinter import ttk 
 from tkinter import colorchooser
-
-#subprocess.run(["arduino-cli"])
-#export PATH="$PATH:/home/ali/repos/mouse-project/bin"
-#bin/arduino-cli compile --fqbn arduino:mbed_rp2040:pico --port /dev/ttyACM0 --upload  ./mouse-project.ino 
-
+from sys import platform
+import serial.tools.list_ports
 
 def getValues():
-    values = []
+
     fr = open("./mouse-project.ino", "r")
     inoLines= fr.readlines()
     fr.close
@@ -58,7 +54,8 @@ def getValues():
         green = rgb_color[1]
         blue = rgb_color[2]
 
-    
+    inoLines[184] = f"#define GLOBAL_BRIGHTNESS {brightness}\n"
+
     if nDPI == 1:
         inoLines[180] = f"int dpi_values[] = {{{nDPI1}}};\n"
     elif nDPI == 2:
@@ -67,9 +64,7 @@ def getValues():
         inoLines[180] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}}};\n"
     elif nDPI == 4:
         inoLines[180] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}, {nDPI4}}};\n"
-    elif nDPI == 5:
         inoLines[180] = f"int dpi_values[] = {{{nDPI1}, {nDPI2}, {nDPI3}, {nDPI4}, {nDPI5}}};\n"
-
 
     if rgb_mode == "Off":
         inoLines[188] = f"int rgb_selector = 0;\n"
@@ -86,9 +81,19 @@ def getValues():
     fw.writelines(inoLines)
     fw.close()
 
-    subprocess.run(["./bin/arduino-cli", "compile", "--fqbn", "arduino:mbed_rp2040:pico",  "--port", "/dev/ttyACM0", "--upload", "./mouse-project.ino"])
+    uploadToBoard()
+ 
+def uploadToBoard():
+    ports = list(serial.tools.list_ports.comports())
+    for p in ports:
+        if "2E8A:00C0 SER=048C63E43659285F" in p.hwid:
+            arduino_port = p.device
 
-
+    if platform == "win32" or platform == "win64":
+        subprocess.run(["arduino-cli.exe", "compile", "--fqbn", "arduino:mbed_rp2040:pico",  "--port", arduino_port, "--upload", "./mouse-project.ino"])
+    elif platform == "linux" or platform == "linux2":
+        subprocess.run(["./bin/arduino-cli", "compile", "--fqbn", "arduino:mbed_rp2040:pico",  "--port", arduino_port, "--upload", "./mouse-project.ino"])
+    
 def checkValues(*args):
     dpi1 = ent1.get()
     dpi2 = ent2.get()
@@ -119,11 +124,11 @@ def checkValues(*args):
         brightnessValue.set(0)
         brightnessValue.config(state=DISABLED)
     else: 
-        brightnessValue.config(state="normal", from_=30)
+        brightnessValue.config(state="normal", from_=10)
         if scale != 0:
             brightnessValue.set(scale)
         else:
-            brightnessValue.set(200)
+            brightnessValue.set(100)
 
     if mode != "Static":
         colorFrame.config(bg=lab1['bg'])
@@ -131,7 +136,6 @@ def checkValues(*args):
         colorFrame.config(bg=('#%02x%02x%02x' % (colorRGB)))
 
     #TODO: add values for the different modes (rainbow, police, breathing)
-
 
 def addDPI(*args):
     n = numberOfDPIs.get()
@@ -442,8 +446,8 @@ colorwheel.pack(pady=5)
 #brightness
 brightnessLabel = Label(root, text="Helligkeit:")
 brightnessLabel.pack(pady=5)
-brightnessValue = Scale(root, from_=30, to=255, length=255, orient=HORIZONTAL)
-brightnessValue.set(200)
+brightnessValue = Scale(root, from_=10, to=255, length=255, orient=HORIZONTAL)
+brightnessValue.set(100)
 brightnessValue.pack()
 
 #save etc
