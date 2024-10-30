@@ -123,6 +123,10 @@ def checkValues(*args):
         brightnessValue.config(from_=0)
         brightnessValue.set(0)
         brightnessValue.config(state=DISABLED)
+    elif mode == 'Breathing':
+        brightnessValue.config(from_=0)
+        brightnessValue.set(0)
+        brightnessValue.config(state=DISABLED)
     else: 
         brightnessValue.config(state="normal", from_=10)
         if scale != 0:
@@ -218,9 +222,9 @@ colorRGB = ()
 style.map("whiteBG.TCombobox", fieldbackground=[("readonly", "white")])
 
 root.title("Settings")
-root.minsize(500, 600)
-#root.maxsize(500, 400)
-root.geometry("500x800+700+100")
+root.minsize(550, 300)
+root.maxsize(550, 300)
+root.geometry("550x300+700+100")
 
 #dropdown menu option
 DPIamountOptions = [
@@ -374,46 +378,45 @@ n5 = IntVar()
 numberOfDPIs = IntVar()
 numberOfDPIs.set(1)
 
-
 #dropdown label + menu
-dropDownLabel = Label(root, text="Wie viele DPI Einstellungen?").pack(pady=5)
-dropDown = OptionMenu(root, numberOfDPIs, *DPIamountOptions, command=addDPI).pack(pady=5)
+dropDownLabel = Label(root, text="Anzahl DPI:").grid(row = 0, column = 0, pady=5, padx=5 )
+dropDown = OptionMenu(root, numberOfDPIs, *DPIamountOptions, command=addDPI).grid(row = 0, column = 1, pady=5, padx=5 )
 
 #comboboxes with labels
 lab1 = Label(root, text="DPI 1:")
-lab1.pack(pady=5)
+lab1.grid(row = 1, column = 0, pady=5, padx=5 )
 ent1 = ttk.Combobox(root, width=7, textvariable=n1, state="readonly", style="whiteBG.TCombobox")
 ent1["values"] = chkboxvalues
 ent1.set("")
-ent1.pack(pady=5)
+ent1.grid(row = 1, column = 1, pady=5, padx=5 )
 
 lab2 = Label(root, text="DPI 2:")
-lab2.pack(pady=5)
+lab2.grid(row = 2, column = 0, pady=5, padx=5 )
 ent2 = ttk.Combobox(root, width=7, textvariable=n2, state=DISABLED)
 ent2["values"] = chkboxvalues
 ent2.set("")
-ent2.pack(pady=5)
+ent2.grid(row = 2, column = 1, pady=5, padx=5 )
 
 lab3 = Label(root, text="DPI 3:")
-lab3.pack(pady=5)
+lab3.grid(row = 3, column = 0, pady=5, padx=5 )
 ent3 = ttk.Combobox(root, width=7, textvariable=n3, state=DISABLED)
 ent3["values"] = chkboxvalues
 ent3.set("")
-ent3.pack(pady=5)
+ent3.grid(row = 3, column = 1, pady=5, padx=5 )
 
 lab4 = Label(root, text="DPI 4:")
-lab4.pack(pady=5)
+lab4.grid(row = 4, column = 0, pady=5, padx=5 )
 ent4 = ttk.Combobox(root, width=7, textvariable=n4, state=DISABLED)
 ent4["values"] = chkboxvalues
 ent4.set("")
-ent4.pack(pady=5)
+ent4.grid(row = 4, column = 1, pady=5, padx=5 )
 
 lab5 = Label(root, text="DPI 5:")
-lab5.pack(pady=5)
+lab5.grid(row = 5, column = 0, pady=5, padx=5 )
 ent5 = ttk.Combobox(root, width=7, textvariable=n5, state=DISABLED)
 ent5["values"] = chkboxvalues
 ent5.set("")
-ent5.pack(pady=5)
+ent5.grid(row = 5, column = 1, pady=5, padx=5 )
 
 #check for changed DPI
 n1.trace_add("write", checkValues)
@@ -423,38 +426,40 @@ n4.trace_add("write", checkValues)
 n5.trace_add("write", checkValues)
 numberOfDPIs.trace_add("write", checkValues)
 
+#empty space
+frame = ttk.Frame(root, width=80, height=300).grid(row = 0, rowspan = 6, column = 2)
+
 #choose RGB mode
 mode = StringVar()
 modeRGBlabel = Label(root, text="RBG:")
-modeRGBlabel.pack(pady=5)
+modeRGBlabel.grid(row = 0, column = 3, pady=5, padx=5 )
 modeRGBbox = ttk.Combobox(root, width=9, textvariable=mode, state="readonly", style="whiteBG.TCombobox")
 modeRGBbox["values"] = modeRGB
 modeRGBbox.set("Static")
-modeRGBbox.pack(pady=5)
+modeRGBbox.grid(row = 0, column = 4, pady=5, padx=5 )
 
 #check for changed RGB mode
 mode.trace_add("write", checkModeRGB)
 
 #RGB colorwheel
 colorLabel = Label(root, text="RGB Farbe:")
-colorLabel.pack(pady=5)
-colorFrame = Frame(root, highlightbackground="black", highlightthickness=2, width=50, height=20)
-colorFrame.pack(pady=5)
-colorwheel = Button(root, text="Farbe auswählen", command=selectColor)
-colorwheel.pack(pady=5)
+colorLabel.grid(row = 1, column = 3, pady=5, padx=5 )
+colorFrame = Frame(root, highlightbackground="black", highlightthickness=2, width=80, height=20)
+colorFrame.grid(row = 1, column = 4, pady=5, padx=5 )
+colorwheel = Button(root, text="Farbe", command=selectColor)
+colorwheel.grid(row = 1, column = 5, pady=5, padx=5 )
 
 #brightness
 brightnessLabel = Label(root, text="Helligkeit:")
-brightnessLabel.pack(pady=5)
-brightnessValue = Scale(root, from_=10, to=255, length=255, orient=HORIZONTAL)
+brightnessLabel.grid(row = 2, column = 3, pady=5, padx=5 )
+brightnessValue = Scale(root, from_=10, to=255, length=80, showvalue=0, orient=HORIZONTAL)
 brightnessValue.set(100)
-brightnessValue.pack()
+brightnessValue.grid(row = 2, column = 4, pady=5, padx=5 )
 
 #save etc
-saveSettings = Button(root, text="Einstellungen speichern", command=getValues, state=DISABLED)
-saveSettings.pack(pady=5)
+saveSettings = Button(root, text="Speichern", command=getValues, state=DISABLED)
+saveSettings.grid(row = 5, column = 4, pady=5, padx=5 )
 exitWindow = Button(root, text="Schließen", command=root.destroy)
-exitWindow.pack(pady=5)
-
+exitWindow.grid(row = 5, column = 5, pady=5, padx=5 )
 
 root.mainloop()
