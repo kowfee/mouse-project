@@ -2,10 +2,10 @@
 
 !!!! ----- DO NOT CHANGE THE STRUCTURE OF THE FILES AND DIRECTORIES IN 'mouse-diy' ---- !!!!
 
-[Installation]:
+[INSTALLATION]:
 
 - Windows: 
-    - run "installer.exe"
+    - within the 'dist' folder run the "installer.exe"
 
 - Linux: 
     - run the following commands from the 'mouse-diy' directory in the terminal:
@@ -14,3 +14,10 @@
         - bin/arduino-cli config set library.enable_unsafe_install true
         - bin/arduino-cli lib install --zip-path files/Adafruit_NeoPixel-1.12.3.zip
 
+[HOW TO USE]:
+
+- Windows:
+    - run the 'interface.exe' within the 'dist' folder
+- Linux:
+    - from the 'mouse-diy' directory run the following command:
+        - dist/interface
