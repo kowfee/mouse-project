@@ -178,7 +178,7 @@ uint8_t buttons = 0;
 uint8_t buttons_latch_max = 8;
 uint8_t buttons_latch[5] = {0, 0, 0, 0, 0};
 
-int dpi_values[] = {6};
+int dpi_values[] = {33, 75, 81};
 int NUM_DPI_VALUES = sizeof(dpi_values) / sizeof(dpi_values[0]);
 int current_dpi_index = 0;
 
@@ -362,7 +362,7 @@ void rgb_off() {
 
 void static_color() {
   for (int i = 0; i < strip.numPixels(); i++) {
-	strip.setPixelColor(i, 217, 20, 217);
+	strip.setPixelColor(i, 217, 217, 4);
   }
   strip.show();
 }

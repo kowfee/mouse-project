@@ -7,7 +7,7 @@ from sys import platform
 import serial.tools.list_ports
 
 def getValues():
-    with open("./mouse-project.ino", "r") as ino_read:
+    with open("./mouse-diy.ino", "r") as ino_read:
         inoLines = ino_read.readlines()
 
     nDPI = numberOfDPIs.get()
@@ -33,7 +33,7 @@ def getValues():
         i5 = int(s5)
         nDPI5 = int((i5/100)-1)
 
-    with open("./mouse-project.ino", "w") as ino_write:
+    with open("./mouse-diy.ino", "w") as ino_write:
         rgb_mode = modeRGBbox.get()
         rgb_color = colorRGB
         brightness = brightnessValue.get()
@@ -87,9 +87,9 @@ def uploadToBoard():
             arduino_port = p.device
     if checkBoardConnection():
         if platform == "win32" or platform == "win64":
-            subprocess.run(["arduino-cli.exe", "compile", "--fqbn", "arduino:mbed_rp2040:pico",  "--port", arduino_port, "--upload", "./mouse-project.ino"])
+            subprocess.run(["arduino-cli.exe", "compile", "--fqbn", "arduino:mbed_rp2040:pico",  "--port", arduino_port, "--upload", "./mouse-diy.ino"])
         elif platform == "linux" or platform == "linux2":
-            subprocess.run(["./bin/arduino-cli", "compile", "--fqbn", "arduino:mbed_rp2040:pico",  "--port", arduino_port, "--upload", "./mouse-project.ino"])
+            subprocess.run(["./bin/arduino-cli", "compile", "--fqbn", "arduino:mbed_rp2040:pico",  "--port", arduino_port, "--upload", "./mouse-diy.ino"])
     else:
         ErrorWindow()
 
