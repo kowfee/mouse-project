@@ -13,6 +13,8 @@
         - sudo $HOME/.arduino15/packages/arduino/hardware/mbed_rp2040/4.1.5/- post_install.sh
         - bin/arduino-cli config set library.enable_unsafe_install true
         - bin/arduino-cli lib install --zip-path files/Adafruit_NeoPixel-1.12.3.zip
+        - chmod 744 dist/interface
+        - chmod 744 bin/arduino-cli
 
 [HOW TO USE]:
 

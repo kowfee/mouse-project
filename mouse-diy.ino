@@ -178,15 +178,15 @@ uint8_t buttons = 0;
 uint8_t buttons_latch_max = 8;
 uint8_t buttons_latch[5] = {0, 0, 0, 0, 0};
 
-int dpi_values[] = {15};
+int dpi_values[] = {47};
 int NUM_DPI_VALUES = sizeof(dpi_values) / sizeof(dpi_values[0]);
 int current_dpi_index = 0;
 
-#define GLOBAL_BRIGHTNESS 10
+#define GLOBAL_BRIGHTNESS 255
 int rgb_modes[] = {0, 1, 2, 3, 4};
 // 0 - off; 1 - static color; 2 - rainbow; 3 - police; 4 - breathing
 int NUM_RGB_MODES = sizeof(rgb_modes) / sizeof(rgb_modes[0]);
-int rgb_selector = 3;
+int rgb_selector = 2;
 
 
 volatile uint32_t * pad_control = (uint32_t *)0x4001c000;
