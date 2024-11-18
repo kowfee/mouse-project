@@ -83,7 +83,7 @@ def getValues():
 def uploadToBoard():
     ports = list(serial.tools.list_ports.comports())
     for p in ports:
-        if "2E8A:00C0 SER=048C63E43659285F" in p.hwid:
+        if "2E8A:00C0" in p.hwid:
             arduino_port = p.device
     if checkBoardConnection():
         if platform == "win32" or platform == "win64":
