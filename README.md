@@ -42,9 +42,11 @@ The user interface lets you choose how many DPI settings you want to save and th
         - rm -rf $HOME/Arduino/libraries/Adafruit_Neopixel/
 
 Adafruit NeoPixel GNU Lesser General Public License https://github.com/adafruit/Adafruit_NeoPixel
+
 Arduino CLI Gnu General Public License https://github.com/arduino/arduino-cli
 
 relmouse_16.h is based on files from mbed OS, also licensed under the Apache License, version 2.0. https://github.com/arduino/ArduinoCore-mbed
+
 The hardware design files ("PCB mit LED", "Fusion360-Base.f3z" and "Fusion360-Body.f3z") are licensed under the SolderpadLicense, version 2.1, as follows:
 ```
 Copyright 2024 Pasty6969, klibandm
