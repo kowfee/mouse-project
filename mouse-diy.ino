@@ -269,13 +269,13 @@ void update_buttons() {
         dpi_button_pressed = true;
         dpi_button_press_time = millis(); // Track time of button press
     }
-    else if ((dpi_button_pressed) && (millis() - dpi_button_press_time >= HOLD_THRESHOLD) && (!current_dpi_state))
+    else if ((dpi_button_pressed) && (millis() - dpi_button_press_time >= HOLD_THRESHOLD) )
     {
         rgb_selector = (rgb_selector + 1) % NUM_RGB_MODES;
         dpi_button_press_time = millis(); // Reset the press time to avoid multiple calls
         dpi_button_pressed = false;
     }
-    else if ((dpi_button_pressed) && (!current_dpi_state))
+    else if ((dpi_button_pressed) && (millis() - dpi_button_press_time < 100) && (!current_dpi_state))
     {
         // Button was just released
         dpi_button_pressed = false;
@@ -286,6 +286,10 @@ void update_buttons() {
 
         // Call the configuration function with the new DPI value
         pmw3360_config(new_dpi_value);
+    }
+    else if (!current_dpi_state)
+    {
+        dpi_button_pressed = false;
     }
 
     buttons = next_buttons;
