@@ -3,6 +3,9 @@ this project was inspired by https://github.com/wareya/DIY-Gaming-Mouse
 
 !!!! ----- DO NOT CHANGE THE STRUCTURE OF THE FILES AND DIRECTORIES IN 'mouse-diy' ---- !!!!
 
+!!!! ----- src/srom_3360_0x04.h should contain copyrighted material, so it is not included in this repository. 0x00 should be replaced with a correct sequence, available on the internet ---- !!!!
+!!!! ----- it is firmware for the pmw3360 sensor. it will function without the firmware, however loses some of the functionality and precision ---- !!!!
+
 [INSTALLATION]
 
 - Windows: 
