@@ -40,3 +40,21 @@ The user interface lets you choose how many DPI settings you want to save and th
     - run the following commands in the terminal:
         - rm -rf $HOME/.arduino15/packages/arduino/hardware/mbed_rp2040/
         - rm -rf $HOME/Arduino/libraries/Adafruit_Neopixel/
+
+Adafruit NeoPixel GNU Lesser General Public License https://github.com/adafruit/Adafruit_NeoPixel
+Arduino CLI Gnu General Public License https://github.com/arduino/arduino-cli
+
+relmouse_16.h is based on files from mbed OS, also licensed under the Apache License, version 2.0. https://github.com/arduino/ArduinoCore-mbed
+The hardware design files ("PCB mit LED", "Fusion360-Base.f3z" and "Fusion360-Body.f3z") are licensed under the SolderpadLicense, version 2.1, as follows:
+```
+Copyright 2024 Pasty6969, klibandm
+SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
+
+Licensed under the Solderpad Hardware License v 2.1 (the “License”); you may not use this file except in compliance with the License, or, at your option, the Apache License version 2.0. You may obtain a copy of the License at
+
+https://solderpad.org/licenses/SHL-2.1/
+
+Unless required by applicable law or agreed to in writing, any work distributed under the License is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+```
+
+mouse-diy.ino as well as other file contents are licensed under MIT License
