@@ -1,5 +1,4 @@
 import subprocess
-import threading
 from tkinter import *
 from tkinter import ttk
 from tkinter import colorchooser
