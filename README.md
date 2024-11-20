@@ -45,6 +45,8 @@ The user interface lets you choose how many DPI settings you want to save and th
         - rm -rf $HOME/.arduino15/packages/arduino/hardware/mbed_rp2040/
         - rm -rf $HOME/Arduino/libraries/Adafruit_Neopixel/
 
+
+[LICENSE]
 Adafruit NeoPixel is licensed under GNU Lesser General Public License https://github.com/adafruit/Adafruit_NeoPixel
 
 Arduino CLI is licensed under GNU General Public License https://github.com/arduino/arduino-cli
